@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Payment methods",
+  "FriendlyName": "Snapp Pay!",
+  "SystemName": "NopPlus.SnappPay",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.50" ],
+  "Author": "nopPlus",
+  "DisplayOrder": 1,
+  "FileName": "NopPlus.Plugin.SnappPay.dll",
+  "Description": "This plugin enables SnappPay payment"
+}
