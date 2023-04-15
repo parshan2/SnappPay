@@ -20,7 +20,7 @@ namespace NopPlus.Plugin.SnappPay.Controllers
     public class PaymentSnappPayController : BasePaymentController
     {
         #region Fields
-        
+
         private readonly ILocalizationService _localizationService;
         private readonly INotificationService _notificationService;
         private readonly IPermissionService _permissionService;
@@ -59,12 +59,20 @@ namespace NopPlus.Plugin.SnappPay.Controllers
 
             var model = new ConfigurationModel
             {
+                Username = pluginSettings.Username,
+                Password = pluginSettings.Password,
+                ClientId = pluginSettings.ClientId,
+                ClientSecret = pluginSettings.ClientSecret,
                 AdditionalFee = pluginSettings.AdditionalFee,
                 AdditionalFeePercentage = pluginSettings.AdditionalFeePercentage,
                 ActiveStoreScopeConfiguration = storeScope
             };
             if (storeScope > 0)
             {
+                model.Username_OverrideForStore = await _settingService.SettingExistsAsync(pluginSettings, x => x.Username, storeScope);
+                model.Password_OverrideForStore = await _settingService.SettingExistsAsync(pluginSettings, x => x.Password, storeScope);
+                model.ClientId_OverrideForStore = await _settingService.SettingExistsAsync(pluginSettings, x => x.ClientId, storeScope);
+                model.ClientSecret_OverrideForStore = await _settingService.SettingExistsAsync(pluginSettings, x => x.ClientSecret, storeScope);
                 model.AdditionalFee_OverrideForStore = await _settingService.SettingExistsAsync(pluginSettings, x => x.AdditionalFee, storeScope);
                 model.AdditionalFeePercentage_OverrideForStore = await _settingService.SettingExistsAsync(pluginSettings, x => x.AdditionalFeePercentage, storeScope);
             }
@@ -86,6 +94,10 @@ namespace NopPlus.Plugin.SnappPay.Controllers
             var pluginSettings = await _settingService.LoadSettingAsync<PluginSettings>(storeScope);
 
             //save settings
+            pluginSettings.Username = model.Username;
+            pluginSettings.Password = model.Password;
+            pluginSettings.ClientId = model.ClientId;
+            pluginSettings.ClientSecret = model.ClientSecret;
             pluginSettings.AdditionalFee = model.AdditionalFee;
             pluginSettings.AdditionalFeePercentage = model.AdditionalFeePercentage;
 
@@ -93,9 +105,13 @@ namespace NopPlus.Plugin.SnappPay.Controllers
              * This behavior can increase performance because cached settings will not be cleared 
              * and loaded from database after each update */
 
+            await _settingService.SaveSettingOverridablePerStoreAsync(pluginSettings, x => x.Username, model.Username_OverrideForStore, storeScope, false);
+            await _settingService.SaveSettingOverridablePerStoreAsync(pluginSettings, x => x.Password, model.Password_OverrideForStore, storeScope, false);
+            await _settingService.SaveSettingOverridablePerStoreAsync(pluginSettings, x => x.ClientId, model.ClientId_OverrideForStore, storeScope, false);
+            await _settingService.SaveSettingOverridablePerStoreAsync(pluginSettings, x => x.ClientSecret, model.ClientSecret_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(pluginSettings, x => x.AdditionalFee, model.AdditionalFee_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(pluginSettings, x => x.AdditionalFeePercentage, model.AdditionalFeePercentage_OverrideForStore, storeScope, false);
-            
+
             //now clear settings cache
             await _settingService.ClearCacheAsync();
 

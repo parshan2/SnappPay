@@ -237,14 +237,26 @@ namespace NopPlus.Plugin.SnappPay
             //settings
             var settings = new PluginSettings
             {
-                
+                BaseUrl = "https://fms-gateway-staging.apps.public.okd4.teh-1.snappcloud.io",
+                Username = "",
+                Password = "",
+                ClientId = "",
+                ClientSecret = "",
             };
             await _settingService.SaveSettingAsync(settings);
 
             //locales
             await _localizationService.AddOrUpdateLocaleResourceAsync(new Dictionary<string, string>
             {
-                ["NopPlus.Plugin.SnappPay.Instructions"] = "This payment method stores credit card information in database (it's not sent to any third-party processor). In order to store credit card information, you must be PCI compliant.",
+                ["NopPlus.Plugin.SnappPay.Instructions"] = "Visit https://snapppay.ir to create an account.",
+                ["NopPlus.Plugin.SnappPay.Fields.Username"] = "Username",
+                ["NopPlus.Plugin.SnappPay.Fields.Username.Hint"] = "Get your api username from snapppay.",
+                ["NopPlus.Plugin.SnappPay.Fields.Password"] = "Password",
+                ["NopPlus.Plugin.SnappPay.Fields.Password.Hint"] = "Get your api password from snapppay.",
+                ["NopPlus.Plugin.SnappPay.Fields.ClientId"] = "Client Id",
+                ["NopPlus.Plugin.SnappPay.Fields.ClientId.Hint"] = "Get your api client id from snapppay.",
+                ["NopPlus.Plugin.SnappPay.Fields.ClientSecret"] = "Client Secret",
+                ["NopPlus.Plugin.SnappPay.Fields.ClientSecret.Hint"] = "Get your api client secret from snapppay.",
                 ["NopPlus.Plugin.SnappPay.Fields.AdditionalFee"] = "Additional fee",
                 ["NopPlus.Plugin.SnappPay.Fields.AdditionalFee.Hint"] = "Enter additional fee to charge your customers.",
                 ["NopPlus.Plugin.SnappPay.Fields.AdditionalFeePercentage"] = "Additional fee. Use percentage",
